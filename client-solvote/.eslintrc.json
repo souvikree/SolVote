@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "plugin:tailwindcss/recommended",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:import/recommended"
+  ],
+  "plugins": ["react", "jsx-a11y", "import", "tailwindcss"],
+  "rules": {
+    "tailwindcss/classnames-order": "warn",
+    "tailwindcss/enforces-shorthand": "warn",
+    "tailwindcss/migration-from-tailwind-2": "warn",
+    "tailwindcss/no-custom-classname": "off"
+  }
+}
