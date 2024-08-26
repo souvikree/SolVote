@@ -172,8 +172,8 @@ const PollCreationForm: FC = () => {
             
             <button
                 type="submit"
-                className={`w-full py-3 px-4 rounded-lg text-white ${connected ? 'bg-blue-500' : 'bg-gray-400 cursor-not-allowed'}`}
-                disabled={!connected}
+                className={`w-full py-3 px-4 rounded-lg text-white ${connected ? 'bg-blue-500' : 'bg-gray-400 cursor-not-allowed'}`}  //
+                // disabled={!connected}
             >
                 Create Poll
             </button>
