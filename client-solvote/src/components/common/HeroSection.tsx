@@ -10,7 +10,7 @@ const HeroSection: FC = () => {
                 <h1 className="text-4xl font-bold mb-4">Decentralized Voting Platform</h1>
                 <p className="text-lg mb-8">Create and participate in polls with the power of the Solana blockchain.</p>
                 <div className="space-x-4">
-                    <CallToActionButton href="/create-poll" text="Create a Poll" />
+                    <CallToActionButton href="/createpoll" text="Create a Poll" />
                     <CallToActionButton href="/polls" text="View Polls" />
                 </div>
             </div>

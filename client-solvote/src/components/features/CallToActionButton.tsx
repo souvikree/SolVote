@@ -8,8 +8,8 @@ interface CallToActionButtonProps {
 
 const CallToActionButton: FC<CallToActionButtonProps> = ({ href, text }) => {
     return (
-        <Link href={href}>
-            <a className="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors">{text}</a>
+        <Link href={href} className="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors">
+            {text}
         </Link>
     );
 };

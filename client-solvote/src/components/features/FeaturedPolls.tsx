@@ -4,6 +4,7 @@ import PollCard from './PollCard';
 const featuredPolls = [
     { question: 'Poll 1 Question?', optionsSummary: 'Summary of options', votes: 120, onViewMore: () => {} },
     { question: 'Poll 2 Question?', optionsSummary: 'Summary of options', votes: 95, onViewMore: () => {} },
+    { question: 'Poll 3 Question?', optionsSummary: 'Summary of options', votes: 195, onViewMore: () => {} },
     // Add more poll data as needed
 ];
 
