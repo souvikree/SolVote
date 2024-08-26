@@ -1,25 +1,31 @@
-import React from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import FeaturedPolls from '../components/features/FeaturedPolls'; // Or a different component if needed
+import { GetServerSideProps } from 'next';
+import UserPollList from '@/components/mypolls/UserPollList';
+import { fetchPolls, Poll } from '@/utils/fetchPolls';
+import { useWallet } from '@solana/wallet-adapter-react';
 import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
 
-const MyPolls: React.FC = () => {
+const MyPollsPage = ({ polls }: { polls: Poll[] }) => {
+    const { connected } = useWallet();
+
+    if (!connected) {
+        return (
+            <div className="container mx-auto pt-20 px-4 text-center">
+                <p className="text-xl">Please connect your wallet to view your polls.</p>
+            </div>
+        );
+    }
+
     return (
         <>
-            <Head>
-                <title>My Polls - VotingApp</title>
-                <meta name="description" content="View and manage your polls on the decentralized voting platform." />
-            </Head>
-            <Header />
-            <main className="p-6">
-                <h1 className="text-3xl font-bold mb-4">My Polls</h1>
-                <FeaturedPolls /> {/* Adjust or create a component for user-specific polls */}
-            </main>
-            {/* <Footer /> */}
+            <Header/>
+            <UserPollList polls={polls}  />
         </>
     );
 };
 
-export default MyPolls;
+export default MyPollsPage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const polls = await fetchPolls(); // Fetch polls based on connected wallet
+    return { props: { polls } };
+};
