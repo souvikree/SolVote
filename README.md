@@ -92,7 +92,7 @@ npm install @solana/wallet-adapter-react @solana/wallet-adapter-wallets @solana/
 
 ```bash
 git clone https://github.com/your-username/SolVote.git
-cd solana-voting-platform
+cd SolVote
 ```
 
 ### **Install Frontend Dependencies**
