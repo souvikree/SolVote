@@ -1,8 +1,9 @@
 import '../styles/globals.css'; // Ensure this path is correct
 import { AppProps } from 'next/app';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { ConnectionProvider, WalletProvider as SolanaWalletProvider } from '@solana/wallet-adapter-react';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { useMemo } from 'react';
+import { WalletContextProvider } from '@/context/WalletContext'; // Adjust the path as needed
 
 const App = ({ Component, pageProps }: AppProps) => {
     const network = "https://api.mainnet-beta.solana.com";
@@ -11,9 +12,11 @@ const App = ({ Component, pageProps }: AppProps) => {
 
     return (
         <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
-                <Component {...pageProps} />
-            </WalletProvider>
+            <SolanaWalletProvider wallets={wallets} autoConnect>
+                <WalletContextProvider>
+                    <Component {...pageProps} />
+                </WalletContextProvider>
+            </SolanaWalletProvider>
         </ConnectionProvider>
     );
 };

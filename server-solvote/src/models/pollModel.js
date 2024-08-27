@@ -46,7 +46,7 @@ const pollSchema = new mongoose.Schema({
     required: false,
   },
 }, {
-  timestamps: true, // Automatically add createdAt and updatedAt fields
+  timestamps: true, 
 });
 
 pollSchema.methods.closePoll = function () {
