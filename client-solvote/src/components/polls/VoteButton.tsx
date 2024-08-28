@@ -1,25 +1,38 @@
-import React from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import React, { Dispatch, SetStateAction } from 'react';
+import { useSolana } from '../../context/SolanaContext';
+import { PublicKey } from '@solana/web3.js';
 
-const VoteButton: React.FC<{ pollId: string, setHasVoted: (v: boolean) => void }> = ({ pollId, setHasVoted }) => {
-    const { connected, publicKey } = useWallet();
+interface VoteButtonProps {
+  pollId: string;
+  optionIndex: number;
+  setHasVoted: Dispatch<SetStateAction<boolean>>;
+}
 
-    const handleVote = async () => {
-        if (connected && publicKey) {
-            // Logic to submit the vote
-            setHasVoted(true);
-        }
-    };
+const VoteButton: React.FC<VoteButtonProps> = ({ pollId, optionIndex }) => {
+  const { program } = useSolana();
 
-    return (
-        <button
-            onClick={handleVote}
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-            disabled={!connected}
-        >
-            Vote
-        </button>
-    );
+  const handleVote = async () => {
+    if (!program) {
+      console.error("Program is null or undefined");
+      return;
+    }
+    try {
+      const pollPublicKey = new PublicKey(pollId);
+      const tx = await program.methods.vote(pollPublicKey, optionIndex).rpc();
+      console.log("Vote cast with transaction signature", tx);
+    } catch (error) {
+      console.error("Failed to cast vote:", error);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleVote}
+      className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+    >
+      Vote
+    </button>
+  );
 };
 
 export default VoteButton;

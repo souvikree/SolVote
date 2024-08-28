@@ -2,8 +2,10 @@ import { FC, useState } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useRouter } from 'next/router';
-import { createPoll } from '@/utils/createPoll';
+import { useSolana } from '@/context/SolanaContext';
 import Tooltip from '@/components/features/Tooltip';
+import { createPoll } from '@/utils/createPoll';
+import { Transaction } from '@solana/web3.js';
 
 interface Option {
     id: number;
@@ -19,7 +21,8 @@ interface FormData {
 }
 
 const PollCreationForm: FC = () => {
-    const { connected } = useWallet();
+    const { program } = useSolana();
+    const { connected, publicKey } = useWallet();
     const router = useRouter();
     const { control, handleSubmit, reset } = useForm<FormData>({
         defaultValues: {
@@ -37,13 +40,28 @@ const PollCreationForm: FC = () => {
     const [message, setMessage] = useState<string>('');
 
     const onSubmit = async (data: FormData) => {
-        if (!connected) {
+        if (!connected || !publicKey) {
             setMessage('Please connect your wallet to create a poll.');
             return;
         }
-
+    
+        if (!program) {
+            setMessage('Program is not initialized.');
+            return;
+        }
+    
         try {
-            const result = await createPoll(data);
+            const options = data.options.map((option) => option.value); // Extract option values
+            const result = await createPoll(program, {
+                publicKey,
+                signTransaction: function (transaction: Transaction): Promise<Transaction> {
+                    throw new Error('Function not implemented.');
+                },
+                signAllTransactions: function (transactions: Transaction[]): Promise<Transaction[]> {
+                    throw new Error('Function not implemented.');
+                }
+            }, data.question, options);
+    
             if (result.success) {
                 setMessage('Poll created successfully!');
                 reset();
@@ -52,14 +70,13 @@ const PollCreationForm: FC = () => {
                 setMessage('Failed to create poll.');
             }
         } catch (error) {
-            setMessage('An error occurred while creating the poll.');
+            setMessage('Error creating poll: ' + error);
         }
     };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl mx-auto p-6 mt-9 bg-white shadow-lg rounded-lg">
             <h1 className="text-3xl font-bold mb-6">Create a New Poll</h1>
-            
             <div className="mb-6">
                 <label className="text-gray-700 mb-2 flex items-center" htmlFor="question">
                     Poll Question
@@ -84,7 +101,6 @@ const PollCreationForm: FC = () => {
                     )}
                 />
             </div>
-            
             <div className="mb-6">
                 <label className="block text-gray-700 mb-2">Options</label>
                 {fields.map((option, index) => (
@@ -122,7 +138,6 @@ const PollCreationForm: FC = () => {
                     Add Option
                 </button>
             </div>
-            
             <div className="mb-6">
                 <label className="block text-gray-700 mb-2" htmlFor="deadline">Deadline</label>
                 <Controller
@@ -138,7 +153,6 @@ const PollCreationForm: FC = () => {
                     )}
                 />
             </div>
-            
             <div className="mb-6">
                 <label className="block text-gray-700 mb-2" htmlFor="category">Category</label>
                 <Controller
@@ -172,8 +186,8 @@ const PollCreationForm: FC = () => {
             
             <button
                 type="submit"
-                className={`w-full py-3 px-4 rounded-lg text-white ${connected ? 'bg-blue-500' : 'bg-gray-400 cursor-not-allowed'}`}  //
-                // disabled={!connected}
+                className={`w-full py-3 px-4 rounded-lg text-white ${connected ? 'bg-blue-500' : 'bg-gray-400 cursor-not-allowed'}`}
+                disabled={!connected}
             >
                 Create Poll
             </button>

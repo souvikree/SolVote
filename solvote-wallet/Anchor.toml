@@ -11,7 +11,7 @@ solvote_wallet = "BK5UCcfueEnGzvWf7tnQ7izAGupynCNn8bLXHpR128vu"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "http://localhost:8899"
 wallet = "/home/reek/.config/solana/id.json"
 
 [scripts]

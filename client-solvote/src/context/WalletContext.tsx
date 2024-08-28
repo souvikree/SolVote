@@ -12,7 +12,7 @@ import {
 } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 
-// Define the context type
+// Context type for wallet state
 interface WalletContextType {
   publicKey: PublicKey | null;
   connected: boolean;
@@ -24,17 +24,14 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | null>(null);
 
 export const WalletContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const network = 'devnet'; // Use 'mainnet-beta' for production
-  const endpoint = clusterApiUrl(network);
+  const network = 'localnet'; // Change to 'localnet' for local development
+  const endpoint = 'http://localhost:8899'; // Local Solana network endpoint
 
-  const wallets = useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-      new SolongWalletAdapter(),
-    ],
-    []
-  );
+  const wallets = useMemo(() => [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new SolongWalletAdapter(),
+  ], []);
 
   const { publicKey, connected, disconnect, connect } = useWallet();
 

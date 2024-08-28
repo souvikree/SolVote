@@ -25,7 +25,7 @@ const PollPage = ({ pollData }: { pollData: any }) => {
                 <PollDetails poll={pollData} />
                 <div className="my-8">
                     {!hasVoted ? (
-                        connected ? <VoteButton pollId={pollData.id} setHasVoted={setHasVoted} /> : <p>Please connect your wallet to vote.</p>
+                        connected ? <VoteButton pollId={pollData.id} setHasVoted={setHasVoted} optionIndex={0} /> : <p>Please connect your wallet to vote.</p>
                     ) : (
                         <PollResults pollId={pollData.id} />
                     )}
