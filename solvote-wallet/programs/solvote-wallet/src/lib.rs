@@ -60,8 +60,14 @@ pub struct Poll {
 }
 
 impl Poll {
-    const LEN: usize = 8 + 4 + 256 + 4 + 1024; // Adjust according to your account size needs
+    // Adjusted size calculation based on assumed limits
+    const LEN: usize = 8                 // Discriminator
+                    + 4 + 256            // String: question (4 bytes length + 252 bytes for the string)
+                    + 4 + 10 * (4 + 32)  // Vec<String>: options (4 bytes length + up to 10 options * (4 bytes length + 32 bytes per string))
+                    + 4 + 10 * 8         // Vec<u64>: votes (4 bytes length + 10 votes * 8 bytes per vote)
+                    + 200;               // Extra buffer space for safety
 }
+
 
 #[error_code]
 pub enum CustomError {

@@ -1,13 +1,13 @@
-import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { AnchorProvider, Program } from '@coral-xyz/anchor';
-import idl from '../idl/solvote_wallet.json'; // Import IDL
-
-// Define the types for context values
+import { AnchorProvider,  Program } from '@coral-xyz/anchor';
+import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
+import {SolvoteWallet, IDL} from '../idl/solvote_wallet'; 
 interface SolanaContextType {
   connection: Connection | null;
-  program: Program | null;
+  program: Program<SolvoteWallet> | null;
 }
+
 
 const SolanaContext = createContext<SolanaContextType>({
   connection: null,
@@ -15,24 +15,27 @@ const SolanaContext = createContext<SolanaContextType>({
 });
 
 export const SolanaProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { connection } = useConnection();
+  const wallet = useAnchorWallet();
   const [solanaContext, setSolanaContext] = useState<SolanaContextType>({
-    connection: null,
+    connection,
     program: null,
   });
 
   useEffect(() => {
-    // Check if window.solana is available
-    if (typeof window !== 'undefined' && window.solana) {
-      const connection = new Connection('http://localhost:8899', 'confirmed');
-      const programID = new PublicKey(idl.metadata.address);
-      const provider = new AnchorProvider(connection, window.solana, { preflightCommitment: 'processed' });
-      const program = new Program(idl, programID, provider);
+    if (connection && wallet) {
+      // Create the provider and set it
+      const provider = new AnchorProvider(connection, wallet, {});
+
+      // Define the Program ID and create the Program instance
+      const programId = new PublicKey("BK5UCcfueEnGzvWf7tnQ7izAGupynCNn8bLXHpR128vu");
+      const program = new Program<SolvoteWallet>(IDL, programId, provider);
 
       setSolanaContext({ connection, program });
     } else {
-      console.error('window.solana is not defined');
+      console.error('Connection or wallet is not available');
     }
-  }, []); // Empty dependency array ensures this runs only on client side
+  }, [connection, wallet]);
 
   return (
     <SolanaContext.Provider value={solanaContext}>
