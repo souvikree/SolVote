@@ -1,3 +1,4 @@
+"use client";
 export interface Poll {
     id: string;
     question: string;

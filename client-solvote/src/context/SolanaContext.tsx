@@ -1,41 +1,61 @@
-import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
+"use client";
+import * as anchor from '@coral-xyz/anchor'
+import React, { createContext, useContext, ReactNode, useEffect, useState, useMemo } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { AnchorProvider,  Program } from '@coral-xyz/anchor';
+import { AnchorProvider, Idl, Program } from '@coral-xyz/anchor';
 import { useAnchorWallet, useConnection } from '@solana/wallet-adapter-react';
-import {SolvoteWallet, IDL} from '../idl/solvote_wallet'; 
+import { IDL } from '../idl/solvote_wallet';
+import toast from 'react-hot-toast';
+
 interface SolanaContextType {
   connection: Connection | null;
-  program: Program<SolvoteWallet> | null;
+  program: Program<Idl> | null;
+  loading: boolean;
+  transactionPending: boolean;
 }
-
 
 const SolanaContext = createContext<SolanaContextType>({
   connection: null,
   program: null,
+  loading: false,
+  transactionPending: false,
 });
 
 export const SolanaProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { connection } = useConnection();
   const wallet = useAnchorWallet();
-  const [solanaContext, setSolanaContext] = useState<SolanaContextType>({
-    connection,
-    program: null,
-  });
+  const [loading, setLoading] = useState(false);
+  const [transactionPending, setTransactionPending] = useState(false);
 
-  useEffect(() => {
+  const program = useMemo(() => {
     if (connection && wallet) {
-      // Create the provider and set it
-      const provider = new AnchorProvider(connection, wallet, {});
-
-      // Define the Program ID and create the Program instance
-      const programId = new PublicKey("BK5UCcfueEnGzvWf7tnQ7izAGupynCNn8bLXHpR128vu");
-      const program = new Program<SolvoteWallet>(IDL, programId, provider);
-
-      setSolanaContext({ connection, program });
+      try {
+        const provider = new AnchorProvider(connection, wallet, AnchorProvider.defaultOptions());
+        const programId = new PublicKey("BK5UCcfueEnGzvWf7tnQ7izAGupynCNn8bLXHpR128vu");
+        return new anchor.Program<Idl>(IDL, programId, provider);
+      } catch (error) {
+        console.error('Failed to create program:', error);
+        toast.error('Failed to create program');
+        return null;
+      }
     } else {
-      console.error('Connection or wallet is not available');
+      console.warn('Connection or wallet is not available');
+      return null;
     }
   }, [connection, wallet]);
+
+  const solanaContext = useMemo(() => ({
+    connection,
+    program,
+    loading,
+    transactionPending,
+  }), [connection, program, loading, transactionPending]);
+
+  useEffect(() => {
+    if (!program) {
+      console.error('Program not available');
+    }
+  }, [program]);
 
   return (
     <SolanaContext.Provider value={solanaContext}>

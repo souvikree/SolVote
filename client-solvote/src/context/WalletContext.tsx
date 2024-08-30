@@ -1,3 +1,4 @@
+"use client";
 import React, { createContext, useContext, useMemo } from 'react';
 import {
   ConnectionProvider,
@@ -10,9 +11,8 @@ import {
   SolflareWalletAdapter,
   SolongWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl, PublicKey } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 
-// Context type for wallet state
 interface WalletContextType {
   publicKey: PublicKey | null;
   connected: boolean;

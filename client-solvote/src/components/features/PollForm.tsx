@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
@@ -17,7 +18,6 @@ const PollForm: React.FC = () => {
         try {
             // Replace with your API endpoint or blockchain interaction
             const response = await createPoll(data);
-            
             if (response.success) {
                 // Handle success (e.g., show a success message or redirect)
                 console.log('Poll created successfully:', response.data);

@@ -1,3 +1,4 @@
+"use client";
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { Program, AnchorProvider, web3 } from '@coral-xyz/anchor';
 // import { IDL } from '../idl/solvote_wallet.json'; // Adjust the path to your IDL file

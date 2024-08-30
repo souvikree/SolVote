@@ -1,3 +1,4 @@
+"use client";
 import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import PollCard from './PollCard';

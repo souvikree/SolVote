@@ -1,3 +1,4 @@
+"use client";
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSolana } from '../../context/SolanaContext';
 import { PublicKey } from '@solana/web3.js';

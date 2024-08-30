@@ -1,5 +1,5 @@
 // /src/utils/fetchPollData.ts
-
+"use client";
 export const fetchPollData = async (id: string | string[]): Promise<any> => {
     try {
         const response = await fetch(`/api/polls/${id}`);

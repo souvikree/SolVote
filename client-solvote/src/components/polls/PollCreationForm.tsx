@@ -1,3 +1,4 @@
+"use client";
 import { FC, useState } from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useWallet } from '@solana/wallet-adapter-react';

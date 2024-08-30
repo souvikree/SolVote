@@ -103,9 +103,5 @@
         "name": "InvalidOptionIndex",
         "msg": "The selected option index is invalid."
       }
-    ],
-    "metadata": {
-      "address": "BK5UCcfueEnGzvWf7tnQ7izAGupynCNn8bLXHpR128vu"
-    }
+    ]
   }
-  
